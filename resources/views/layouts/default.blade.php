@@ -62,6 +62,7 @@
                         <a href="{{ route('home') }}" class="nav-item nav-link active">Import</a>
                         <a href="{{ route('export') }}" class="nav-item nav-link">Export</a>
                     </div>
+                    <a href="{{ route('reset') }}" onclick="return confirm('Voulez-vous vraiment vider la base de données !');" class="btn btn-danger px-3 d-none d-lg-flex">Reset</a>
                 </div>
             </nav>
         </div>

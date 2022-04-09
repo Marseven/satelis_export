@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ExportController::class, 'index'])->name('home');
 Route::post('import', [ExportController::class, 'import'])->name('import');
 Route::get('export', [ExportController::class, 'export'])->name('export');
+Route::get('download', [ExportController::class, 'download'])->name('download');
+Route::get('reset', [ExportController::class, 'reset'])->name('reset');
