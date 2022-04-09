@@ -24,7 +24,7 @@ class ExportController extends Controller
             'fichier' => 'required|file'
         ]);
 
-        $collections = Importer::make('csv')->load($request->file('fichier'))->setParser(new ImportsImport)->getCollection();
+        $collections = Importer::make('Csv')->load($request->file('fichier'))->setParser(new ImportsImport)->getCollection();
         $ajoute = 0;
         $maj = 0;
 
@@ -87,7 +87,7 @@ class ExportController extends Controller
     public function download(){
         // 2. Le nom du fichier avec l'extension : .xlsx ou .csv
         $file_name = "Satelis_consolider_".date('YmdHis').".csv";
-        return Exporter::make('csv')->load(Import::all())->setSerialiser(new ImportExport)->stream($file_name);
+        return Exporter::make('Csv')->load(Import::all())->setSerialiser(new ImportExport)->stream($file_name);
     }
 
     public function reset(){
