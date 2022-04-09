@@ -21,56 +21,64 @@ class ExportController extends Controller
     {
         // 1. Validation du fichier uploadé. Extension ".xlsx" autorisée
         $this->validate($request, [
-            'fichier' => 'required|file'
+            'fichier' => 'required'
         ]);
 
-        $collections = Importer::make('Csv')->load($request->file('fichier'))->setParser(new ImportsImport)->getCollection();
         $ajoute = 0;
         $maj = 0;
 
-        foreach ($collections as $row) {
-            if($row != null) {
-                //dd($row);
-                $numcarte = Import::where('NUMCARTE', $row->NUMCARTE)->first();
-                $valeur = substr($row->NUMCARTE, 0, 3);
-                if ($valeur == "238" || $valeur == "239" || $valeur == "241" || $valeur == "242") {
-                    if ($numcarte == null) {
-                        $row->save();
-                        $ajoute++;
-                    } else {
-                        if ($row->CMOUVMT == "CREAT") {
-                            if ($numcarte->CMOUVMT != "CREAT") {
-                                $numcarte->CMOUVMT = $row->CMOUVMT;
-                                $numcarte->save();
-                                $maj++;
-                            }
-                        } elseif ($row->CMOUVMT == "VENTMAT") {
-                            if ($row->CMOUVMT != $numcarte->CMOUVMT && $numcarte->CMOUVMT != "CREAT") {
-                                $numcarte->CMOUVMT = $row->CMOUVMT;
-                                $numcarte->save();
-                                $maj++;
-                            }
-                        } elseif ($row->CMOUVMT == "REAAV") {
-                            if ($row->CMOUVMT != $numcarte->CMOUVMT && $numcarte->CMOUVMT != "CREAT" && $numcarte->CMOUVMT != "VENTMAT") {
-                                $numcarte->CMOUVMT = $row->CMOUVMT;
-                                $numcarte->save();
-                                $maj++;
-                            }
-                        } elseif ($row->CMOUVMT == "REAAP") {
-                            if ($row->CMOUVMT != $numcarte->CMOUVMT && $numcarte->CMOUVMT != "CREAT" && $numcarte->CMOUVMT != "VENTMAT" && $numcarte->CMOUVMT != "REAAV") {
-                                $numcarte->CMOUVMT = $row->CMOUVMT;
-                                $numcarte->save();
-                                $maj++;
-                            }
-                        } elseif ($row->CMOUVMT == "MODART") {
-                            if ($row->CMOUVMT != $numcarte->CMOUVMT && $numcarte->CMOUVMT != "CREAT" && $numcarte->CMOUVMT != "VENTMAT" && $numcarte->CMOUVMT != "REAAV" && $numcarte->CMOUVMT != "REAAP") {
-                                $numcarte->CMOUVMT = $row->CMOUVMT;
-                                $numcarte->save();
-                                $maj++;
+        if($request->hasfile('fichier'))
+        {
+            foreach($request->file('fichier') as $key => $file)
+            {
+                $collections = Importer::make('Csv')->load($file)->setParser(new ImportsImport)->getCollection();
+
+                foreach ($collections as $row) {
+                    if($row != null) {
+                        //dd($row);
+                        $numcarte = Import::where('NUMCARTE', $row->NUMCARTE)->first();
+                        $valeur = substr($row->NUMCARTE, 0, 3);
+                        if ($valeur == "238" || $valeur == "239" || $valeur == "241" || $valeur == "242") {
+                            if ($numcarte == null) {
+                                $row->save();
+                                $ajoute++;
+                            } else {
+                                if ($row->CMOUVMT == "CREAT") {
+                                    if ($numcarte->CMOUVMT != "CREAT") {
+                                        $numcarte->CMOUVMT = $row->CMOUVMT;
+                                        $numcarte->save();
+                                        $maj++;
+                                    }
+                                } elseif ($row->CMOUVMT == "VENTMAT") {
+                                    if ($row->CMOUVMT != $numcarte->CMOUVMT && $numcarte->CMOUVMT != "CREAT") {
+                                        $numcarte->CMOUVMT = $row->CMOUVMT;
+                                        $numcarte->save();
+                                        $maj++;
+                                    }
+                                } elseif ($row->CMOUVMT == "REAAV") {
+                                    if ($row->CMOUVMT != $numcarte->CMOUVMT && $numcarte->CMOUVMT != "CREAT" && $numcarte->CMOUVMT != "VENTMAT") {
+                                        $numcarte->CMOUVMT = $row->CMOUVMT;
+                                        $numcarte->save();
+                                        $maj++;
+                                    }
+                                } elseif ($row->CMOUVMT == "REAAP") {
+                                    if ($row->CMOUVMT != $numcarte->CMOUVMT && $numcarte->CMOUVMT != "CREAT" && $numcarte->CMOUVMT != "VENTMAT" && $numcarte->CMOUVMT != "REAAV") {
+                                        $numcarte->CMOUVMT = $row->CMOUVMT;
+                                        $numcarte->save();
+                                        $maj++;
+                                    }
+                                } elseif ($row->CMOUVMT == "MODART") {
+                                    if ($row->CMOUVMT != $numcarte->CMOUVMT && $numcarte->CMOUVMT != "CREAT" && $numcarte->CMOUVMT != "VENTMAT" && $numcarte->CMOUVMT != "REAAV" && $numcarte->CMOUVMT != "REAAP") {
+                                        $numcarte->CMOUVMT = $row->CMOUVMT;
+                                        $numcarte->save();
+                                        $maj++;
+                                    }
+                                }
                             }
                         }
                     }
                 }
+
             }
         }
 
